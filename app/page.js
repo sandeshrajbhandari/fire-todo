@@ -1,11 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+// import firestore functions
+import { addTodoFire, getTodoFire } from "./lib/controller";
 
 export default function Home() {
   // lets add state to our component
-  const [todos, setTodos] = useState([{ text: "Learn Next.js", done: false }]);
+  const [todos, setTodos] = useState([
+    // { todoName: "Learn Next.js", done: false },
+  ]);
   // lets add a function to handle the form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,7 +17,10 @@ export default function Home() {
     const todo = e.target.todo.value;
     // lets add the todo to our state
     const done = e.target.done.checked;
-    setTodos([...todos, { text: todo, done: done }]);
+    const todoItem = { todoName: todo, done: done };
+    setTodos([...todos, { todoName: todo, done: done }]);
+    // add to firebase too.
+    addTodoFire(todoItem);
     e.target.todo.value = "";
     e.target.done.checked = false;
   };
@@ -24,6 +31,21 @@ export default function Home() {
     const updatedTodo = todos.filter((_, i) => i !== index);
     setTodos(updatedTodo);
   }
+
+  // reading firebase collection in useEffect
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      const todosArr = await getTodoFire();
+      console.log(todosArr);
+      setTodos(todosArr);
+      // return todosArr;
+      // ...
+    }
+    fetchData();
+    // setTodos(fetchData());
+    // setTodos(...todos, ...todosArr);
+  }, []);
   return (
     <main className="flex min-h-screen flex-col">
       <header className="p-4 text-center">
@@ -34,7 +56,7 @@ export default function Home() {
         <section className="flex w-full justify-center p-4 bg-gray-200 rounded">
           <form onSubmit={handleSubmit} className="flex flex-col gap-2 ">
             <div>
-              <labelFor htmlFor="todo">Todo item : </labelFor>
+              <label htmlFor="todo">Todo item : </label>
               <input
                 type="text"
                 name="todo"
@@ -43,7 +65,7 @@ export default function Home() {
               />
             </div>
             <div className="flex flex-start">
-              <labelFor htmlFor="done">Done : </labelFor>
+              <label htmlFor="done">Done : </label>
               <input
                 className="text-lg p-4 ml-9 form-checkbox h-5 w-5"
                 type="checkbox"
@@ -65,7 +87,7 @@ export default function Home() {
               className="flex w-full justify-between p-4 bg-emerald-400 my-2"
               key={index}
             >
-              <p>{todo.text}</p>
+              <p>{todo.todoName}</p>
               <p>{todo.done ? "✅" : "❌"}</p>
               <button
                 className="bg-red-600 p-2"
