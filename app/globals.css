@@ -25,3 +25,18 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+#userForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+#userForm input {
+  @apply border-2 p-2;
+}
+#userForm button {
+  @apply border-2 p-2;
+}

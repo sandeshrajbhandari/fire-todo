@@ -6,6 +6,7 @@ import { collection, doc, getDoc } from "firebase/firestore";
 import { getDefaultAppConfig } from "@firebase/util";
 
 export function useUserData() {
+  // using uid from user object in auth, get username doc from firestore
   const [user] = useAuthState(auth);
   console.log(user);
   const [username, setUsername] = useState(null);
@@ -23,7 +24,7 @@ export function useUserData() {
 
         const docSnap = await getDoc(ref);
         console.log(docSnap.data());
-        console.log("settingUsername to ", docSnap.data().username);
+        console.log("settingUsername to ", docSnap.data()?.username);
         setUsername(docSnap.data()?.username);
         //when onSnapshot called, returns data and unsubscribes.
       } else {
