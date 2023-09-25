@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 // import firestore functions
 import { addTodoFire, getTodoFire } from "./lib/controller";
+import { UserContext } from "./context/AuthContext";
 
 export default function Home() {
   // lets add state to our component
@@ -32,6 +33,8 @@ export default function Home() {
     setTodos(updatedTodo);
   }
 
+  const { user, userName } = useContext(UserContext);
+  console.log("usename is ", userName);
   // reading firebase collection in useEffect
   useEffect(() => {
     async function fetchData() {
@@ -46,6 +49,7 @@ export default function Home() {
     // setTodos(fetchData());
     // setTodos(...todos, ...todosArr);
   }, []);
+
   return (
     <main className="flex min-h-screen flex-col">
       <header className="p-4 text-center">
